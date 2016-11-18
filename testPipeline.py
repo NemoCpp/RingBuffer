@@ -27,12 +27,16 @@ def audio_reader(next_routine, audio_file):
 
 @coroutine
 def  source(suiv):
-    x = [1,2,3,4,5,6,7,8,9,10]
-    y = ['a','b','c']
+    d = np.array([[4, 5,6],[7,8,9], [10,11,12], [13,14,15]])
+    e = np.array([0,1,2,3])
+    #d = None
+    #e = None
+    #l = None
+    l = np.array(['a','b','c','d'])
+    f = Flow(d,e,l)
     while (True):
         (yield None)
-        suiv.send(x)
-        suiv.send(y)
+        suiv.send(f)
     suiv.close()
 
 #Send every other value
@@ -71,14 +75,17 @@ def sink():
     try:
         while True:
             input=yield
-            print("Sink :", input)
+            print("Data :", input.data)
+            print("Energy :",input.energy)
+            print("Label: ",input.label)
     except GeneratorExit:
         print("ici")
 
 
 output = sink()
-buf = ring_buffer(output, 4, 2 )
-inp = audio_reader(buf, "/home/rosalie/Bureau/RichMeeting/SidePipe/RingBuffer/test.raw")
+buf = ring_buffer(output, 2, 1)
+#inp = audio_reader(buf, "/home/rosalie/Bureau/RichMeeting/SidePipe/RingBuffer/test.raw")
+inp = source(buf)
 try : 
     next(inp)
 except StopIteration :

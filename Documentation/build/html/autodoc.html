@@ -27,7 +27,7 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Welcome to RingBuffer’s documentation!" href="index.html" />
+    <link rel="prev" title="RingBuffer" href="README.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -49,6 +49,11 @@
 <hr class="docutils" />
 <p>Here is the autodocumentation for the file ringBuffer.py</p>
 <dl class="function">
+<dt id="ringBuffer.Flow">
+<code class="descclassname">ringBuffer.</code><code class="descname">Flow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ringBuffer.Flow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="ringBuffer.coroutine">
 <code class="descclassname">ringBuffer.</code><code class="descname">coroutine</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#ringBuffer.coroutine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator that allows to forget about the first call of a coroutine .next()
@@ -56,6 +61,11 @@ method or .send(None)
 This call is done inside the decorator
 :param func: the coroutine to decorate</p>
 </dd></dl>
+
+<dl class="function">
+<dt id="ringBuffer.defineOutput">
+<code class="descclassname">ringBuffer.</code><code class="descname">defineOutput</code><span class="sig-paren">(</span><em>source</em>, <em>beginning</em>, <em>end</em><span class="sig-paren">)</span><a class="headerlink" href="#ringBuffer.defineOutput" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="ringBuffer.ring_buffer">
@@ -88,6 +98,11 @@ This call is done inside the decorator
 <code class="descclassname">testPipeline.</code><code class="descname">buffer</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#testPipeline.buffer" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="function">
+<dt id="testPipeline.sink">
+<code class="descclassname">testPipeline.</code><code class="descname">sink</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#testPipeline.sink" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 
 
@@ -105,7 +120,7 @@ This call is done inside the decorator
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Welcome to RingBuffer&#8217;s documentation!</a></li>
+      <li>Previous: <a href="README.html" title="previous chapter">RingBuffer</a></li>
   </ul></li>
 </ul>
 </div>
