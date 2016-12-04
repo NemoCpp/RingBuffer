@@ -27,15 +27,17 @@ def audio_reader(next_routine, audio_file):
 
 @coroutine
 def  source(suiv):
-    d = np.array([[4, 5,6],[7,8,9], [10,11,12], [13,14,15]])
-    e = np.array([0,1,2,3])
+    d = np.array([[4, 5,6],[7,8,9], [10,11,12], [13,14,15], [16,17,18]])
+    e = np.array([0,1,2,3,41])
     #d = None
     #e = None
     #l = None
-    l = np.array(['a','b','c','d'])
+    l = np.array(['a','b','c','d','e'])
     f = Flow(d,e,l)
+
     while (True):
         (yield None)
+        suiv.send(f)
         suiv.send(f)
     suiv.close()
 
@@ -67,7 +69,7 @@ def buffer(suiv):
                 i+= 1
             suiv.send(buf1)
     except GeneratorExit:
-        suiv.close()
+        suiv.close() 
 
 #Output of the pipeline, print the result of the treatment
 @coroutine
@@ -79,7 +81,7 @@ def sink():
             print("Energy :",input.energy)
             print("Label: ",input.label)
     except GeneratorExit:
-        print("ici")
+        print("Fin")
 
 
 output = sink()
@@ -88,5 +90,6 @@ buf = ring_buffer(output, 2, 1)
 inp = source(buf)
 try : 
     next(inp)
+    #next(inp)
 except StopIteration :
     print("That's all folks")

@@ -46,6 +46,7 @@ def ring_buffer(next, window, covering):
         buffer_data = [None]*(window*10)
         buffer_energy = [None]*(window*10)
         buffer_label = [None]*(window*10)
+        m = 10*window
         buf = Flow(None, None, None)
         write_index = 0
         read_index = 0
@@ -71,37 +72,34 @@ def ring_buffer(next, window, covering):
                     buffer_energy = None
                 else : 
                     buffer_energy[write_index] = input.energy[j]
-                    m = len(buffer_energy)
    
                 if(input.data == None):
                     buffer_data = None
                 else : 
                     buffer_data[write_index] = input.data[j]
-                    m = len(buffer_data)
 
                 if(input.label == None):
                     buffer_label = None
                 else : 
                     buffer_label[write_index] = input.label[j]
-                    m = len(buffer_label)
 
                 #update write_index
                 write_index = (write_index + 1 ) % m
                 # data size between indexes
                 data_size =  write_index - read_index if read_index < write_index else m- read_index + write_index
                 #test if a data window can be sent
-                if data_size > window:
+                if data_size >= window:
                     # send a window (testing the case we must concatenate the beginning and end of the buffer)
                     if (read_index < (read_index + window)%m):  
-                        buf.data = defineOutput(input.data, read_index, read_index + window)
-                        buf.energy = defineOutput(input.energy, read_index, read_index + window)
-                        buf.label = defineOutput(input.label, read_index, read_index + window)                 
+                        buf.data = defineOutput(buffer_data, read_index, read_index + window)
+                        buf.energy = defineOutput(buffer_energy, read_index, read_index + window)
+                        buf.label = defineOutput(buffer_label, read_index, read_index + window)                 
                         next.send(buf)
 
                     else:  
-                        buf.data = defineOutput(input.data, read_index, m) + defineOutput(input.data, 0, window - m+ read_index)  
-                        buf.energy = defineOutput(input.energy, read_index, m) + defineOutput(input.energy, 0, window - m+ read_index)  
-                        buf.label = defineOutput(input.label, read_index, m) + defineOutput(input.label, 0, window - m+ read_index)
+                        buf.data = defineOutput(buffer_data, read_index, m) + defineOutput(input.data, 0, window - m+ read_index)  
+                        buf.energy = defineOutput(buffer_energy, read_index, m) + defineOutput(input.energy, 0, window - m+ read_index)  
+                        buf.label = defineOutput(buffer_label, read_index, m) + defineOutput(input.label, 0, window - m+ read_index)
                         next.send(buf)
 
                     read_index = (read_index + offset) % m  
