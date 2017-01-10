@@ -10,6 +10,6 @@ Welcome to RichMeetingTranscription. The long term purpose of this projet is to 
 Instant running
 ===============
 
-You can run our ringBuffer test by typing at the terminal::
+You can run our ringBuffer test by typing in the terminal::
 
    python  testPipeline.py
