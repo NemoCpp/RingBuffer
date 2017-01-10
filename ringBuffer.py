@@ -13,19 +13,6 @@ def coroutine(func):
         return cr
     return start
 
-@coroutine
-def return_result(return_func):
-    """
-    Call the given function with what is received from previous coroutine as
-    parameter
-    :param return_func: return function
-    """
-    try:
-        while True :
-            input = yield
-            return_result(input)
-    except GeneratorExit:
-        next.close()
 
 @coroutine
 def ring_buffer(next, window, covering):
@@ -41,7 +28,7 @@ def ring_buffer(next, window, covering):
         buffer = [None]*(window*10)
         write_index = 0
         read_index = 0
-        data_size = 0
+        data_size = 0 
         offset = window - covering
         while True :
             input = yield
@@ -62,7 +49,7 @@ def ring_buffer(next, window, covering):
                         next.send(buffer[read_index : read_index + window])
                     else:
                         next.send(buffer[read_index : len(buffer)] + buffer[0 : (window - len(buffer) + read_index)])
-                    read_index = (read_index + offset) % len(buffer)
+                    read_index = (read_index + offset) % len(buffer)   
 
     except GeneratorExit:
         next.close()
