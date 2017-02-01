@@ -59,27 +59,27 @@ def ring_buffer(next, window, covering):
             if input.data is None and input.energy is None and input.label is None :
                 continue
 
-            if (input.data != None):
+            if (input.data is not None):
                 n = len(input.data)
-            elif (input.energy != None):
+            elif (input.energy is not None):
                 n = len(input.energy)
-            elif (input.label != None):
+            elif (input.label is not None):
                 n = len(input.label)
 
             # add new data to buffer
             for j in range (0, n):
 
-                if(input.energy == None):
+                if(input.energy is None):
                     buffer_energy = None
                 else :
                     buffer_energy[write_index] = input.energy[j]
 
-                if(input.data == None):
+                if(input.data is None):
                     buffer_data = None
                 else :
                     buffer_data[write_index] = input.data[j]
 
-                if(input.label == None):
+                if(input.label is None):
                     buffer_label = None
                 else :
                     buffer_label[write_index] = input.label[j]
