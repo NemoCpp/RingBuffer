@@ -66,6 +66,7 @@ def ring_buffer(next, window, covering):
             elif (input.label is not None):
                 n = len(input.label)
 
+            #print "Received : {}".format(n)
             # add new data to buffer
             for j in range (0, n):
 
@@ -90,6 +91,7 @@ def ring_buffer(next, window, covering):
                 data_size =  write_index - read_index if read_index < write_index else bufsize- read_index + write_index
                 #test if a data window can be sent
                 if data_size >= window:
+                    #print "Sending window size: {}".format(data_size)
                     # send a window (testing the case we must concatenate the beginning and end of the buffer)
                     if (read_index < (read_index + window-1)%bufsize):
                         buf.data = defineOutput(buffer_data, read_index, read_index + window)
@@ -104,6 +106,7 @@ def ring_buffer(next, window, covering):
                         next.send(buf)
 
                     read_index = (read_index + offset) % bufsize
+                    #print "New read_index : {}".format(read_index)
 
     except GeneratorExit:
         next.close()
