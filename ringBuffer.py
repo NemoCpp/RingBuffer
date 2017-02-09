@@ -62,11 +62,11 @@ def ring_buffer(next, window, covering, sample_size=1):
                 continue
 
             if (input.data is not None):
-                n = input.data.shape[-1]
+                n = input.data.shape[0]
             elif (input.energy is not None):
-                n = input.energy.shape[-1]
+                n = input.energy.shape[0]
             elif (input.label is not None):
-                n = input.label.shape[-1]
+                n = input.label.shape[0]
 
             # add new data to buffer
             for j in range (0, n):
