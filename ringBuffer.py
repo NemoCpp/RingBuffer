@@ -25,7 +25,7 @@ def coroutine(func):
 #Test if the source equals None
 def defineOutput(source, beginning, end):
     output = None
-    if(source == None):
+    if(source is None):
         output = None
     else :
         output = copy.deepcopy(source[beginning : end])
@@ -34,7 +34,7 @@ def defineOutput(source, beginning, end):
 
 
 @coroutine
-def ring_buffer(next, window, covering):
+def ring_buffer(next, window, covering, sample_size=1):
     """
     Ring buffer inside a coroutine that allows to bufferize received data
     Hand send it to next method when window size is reached. A covering size
@@ -45,9 +45,12 @@ def ring_buffer(next, window, covering):
     """
     try:
         bufsize = 10*window
-        buffer_data = [None]*bufsize
-        buffer_energy = [None]*bufsize
-        buffer_label = [None]*bufsize
+        #buffer_data = [None]*bufsize
+        buffer_data = np.empty((bufsize, sample_size), dtype='|O')
+        #buffer_energy = [None]*bufsize
+        buffer_energy = np.empty((bufsize), dtype='|O')
+        #buffer_label = [None]*bufsize
+        buffer_label = np.empty((bufsize), dtype='|O')
         buf = Flow(None, None, None)
         write_index = 0
         read_index = 0
@@ -55,21 +58,18 @@ def ring_buffer(next, window, covering):
         offset = window - covering
         while True :
             input = yield
-            #print (len(input.energy))
             if input.data is None and input.energy is None and input.label is None :
                 continue
 
             if (input.data is not None):
-                n = len(input.data)
+                n = input.data.shape[-1]
             elif (input.energy is not None):
-                n = len(input.energy)
+                n = input.energy.shape[-1]
             elif (input.label is not None):
-                n = len(input.label)
+                n = input.label.shape[-1]
 
-            #print "Received : {}".format(n)
             # add new data to buffer
             for j in range (0, n):
-
                 if(input.energy is None):
                     buffer_energy = None
                 else :
@@ -91,22 +91,21 @@ def ring_buffer(next, window, covering):
                 data_size =  write_index - read_index if read_index < write_index else bufsize- read_index + write_index
                 #test if a data window can be sent
                 if data_size >= window:
-                    #print "Sending window size: {}".format(data_size)
                     # send a window (testing the case we must concatenate the beginning and end of the buffer)
                     if (read_index < (read_index + window-1)%bufsize):
                         buf.data = defineOutput(buffer_data, read_index, read_index + window)
                         buf.energy = defineOutput(buffer_energy, read_index, read_index + window)
                         buf.label = defineOutput(buffer_label, read_index, read_index + window)
                         next.send(buf)
-
                     else:
-                        buf.data = defineOutput(buffer_data, read_index, bufsize) + defineOutput(buffer_data, 0, window - bufsize+ read_index)
-                        buf.energy = defineOutput(buffer_energy, read_index, bufsize) + defineOutput(buffer_energy, 0, window - bufsize+ read_index)
-                        buf.label = defineOutput(buffer_label, read_index, bufsize) + defineOutput(buffer_label, 0, window - bufsize+ read_index)
+                        buf.data = np.vstack((defineOutput(buffer_data, read_index, bufsize),
+                                              defineOutput(buffer_data, 0, window - bufsize + read_index)))
+                        buf.energy = np.hstack((defineOutput(buffer_energy, read_index, bufsize),
+                                                defineOutput(buffer_energy, 0, window - bufsize + read_index)))
+                        buf.label = np.hstack((defineOutput(buffer_label, read_index, bufsize),
+                                               defineOutput(buffer_label, 0, window - bufsize + read_index)))
                         next.send(buf)
-
                     read_index = (read_index + offset) % bufsize
-                    #print "New read_index : {}".format(read_index)
 
     except GeneratorExit:
         next.close()
