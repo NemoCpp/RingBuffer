@@ -46,11 +46,11 @@ def ring_buffer(next, window, covering, sample_size=1):
     try:
         bufsize = 10*window
         #buffer_data = [None]*bufsize
-        buffer_data = np.empty((bufsize, sample_size), dtype='|O')
+        buffer_data = np.empty((bufsize, sample_size))
         #buffer_energy = [None]*bufsize
-        buffer_energy = np.empty((bufsize), dtype='|O')
+        buffer_energy = np.empty((bufsize))
         #buffer_label = [None]*bufsize
-        buffer_label = np.empty((bufsize), dtype='|O')
+        buffer_label = np.empty((bufsize))
         buf = Flow(None, None, None)
         write_index = 0
         read_index = 0
