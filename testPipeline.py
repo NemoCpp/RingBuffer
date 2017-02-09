@@ -1,12 +1,13 @@
 import numpy as np  
 from ringBuffer import *
+from ringBuffer import Flow
 import sidekit
 
 #Function which send tabs into the pipeline
 @coroutine
 def audio_reader(next_routine, audio_file):
     input_filename = audio_file
-    sampling_rate = 16000
+    sampling_rate = 8000
     if input_filename.endswith('.sph') or input_filename.endswith('.pcm')\
             or input_filename.endswith('.wav') or input_filename.endswith('.raw'):
         x, rate = sidekit.frontend.io.read_audio(input_filename, sampling_rate)
@@ -22,7 +23,9 @@ def audio_reader(next_routine, audio_file):
 
     (yield None)
     idx = 0
-    next_routine.send(x)
+    print("x is a {}".format(type(x)))
+    f = Flow(x, np.empty(len(x), dtype='|O'), np.empty(len(x), dtype='|O'))
+    next_routine.send(f)
     next_routine.close()
 
 @coroutine
@@ -74,6 +77,7 @@ def buffer(suiv):
 #Output of the pipeline, print the result of the treatment
 @coroutine
 def sink():
+    data = []
     try:
         while True:
             input=yield
@@ -81,15 +85,17 @@ def sink():
             print("Energy :",input.energy)
             print("Label: ",input.label)
     except GeneratorExit:
-        print("Fin")
+        print("End")
 
 
-output = sink()
-buf = ring_buffer(output, 2, 1)
+
+
+#output = sink()
+#buf = ring_buffer(output, 2, 1)
 #inp = audio_reader(buf, "/home/rosalie/Bureau/RichMeeting/SidePipe/RingBuffer/test.raw")
-inp = source(buf)
-try : 
-    next(inp)
-    #next(inp)
-except StopIteration :
-    print("That's all folks")
+#inp = source(buf)
+#try :
+#    next(inp)
+#    #next(inp)
+#except StopIteration :
+#    print("That's all folks")
