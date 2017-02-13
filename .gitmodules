@@ -1,0 +1,3 @@
+[submodule "sidekit"]
+	path = sidekit
+	url = git@git-lium.univ-lemans.fr:Larcher/sidekit.git
