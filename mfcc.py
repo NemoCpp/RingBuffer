@@ -7,10 +7,10 @@
 #
 # SIDEKIT is a python package for speaker verification.
 # Home page: http://www-lium.univ-lemans.fr/sidekit/
-#    
+#
 # SIDEKIT is free software: you can redistribute it and/or modify
-# it under the terms of the GNU LLesser General Public License as 
-# published by the Free Software Foundation, either version 3 of the License, 
+# it under the terms of the GNU LLesser General Public License as
+# published by the Free Software Foundation, either version 3 of the License,
 # or (at your option) any later version.
 #
 # SIDEKIT is distributed in the hope that it will be useful,
@@ -250,7 +250,9 @@ def mfcc(next):
             # The C0 term is removed as it is the constant term
             buf.data = scipy.fftpack.realtransforms.dct(mspec, type=2, norm='ortho', axis=-1)[1:nceps + 1]
 
-            buf.data = buf.data[:, numpy.newaxis]
+            #add a new axis before to have shape(1,13)
+            buf.data = buf.data[numpy.newaxis, :]
+
             next.send(buf)
 
     except GeneratorExit:
@@ -268,4 +270,7 @@ if __name__ == '__main__':
     cep = mfcc(buf_cep)
     buf_sig = ringBuffer.ring_buffer(cep, 200, 80)
     inp = audio_reader(buf_sig, "taaa.wav")
-    next(inp)
+    try :
+        next(inp)
+    except StopIteration:
+        pass
